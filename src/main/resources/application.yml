@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: showselfdemo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/showselfdemo?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456789
+    type: com.alibaba.druid.pool.DruidDataSource
+server:
+  port: 8080
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.example.mybatistest.dao
+  configuration:
+    # 就是这行代码让mybatis可以输出sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
