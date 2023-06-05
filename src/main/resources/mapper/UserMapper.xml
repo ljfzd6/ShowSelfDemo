@@ -11,7 +11,14 @@
     <select id="selectAll" resultType="com.example.showselfdemo.dao.User">
         select * from show_user;
     </select>
-    <select id="selectUserByUsername" parameterType="java.lang.String" resultType="com.example.showselfdemo.dao.User">
-        select * from show_user where username=#{username}
+    <select id="selectUserByEmail" parameterType="java.lang.String" resultType="com.example.showselfdemo.dao.User">
+        select * from show_user where email=#{email}
     </select>
+    <insert id="insertUser" parameterType="com.example.showselfdemo.dao.User">
+        insert into show_user (id,username,password,name,email,sex,phone,grade,createtime) values (#{id},#{username},#{password},#{name},#{email},#{sex},#{phone},#{grade},#{createtime})
+    </insert>
+    <update id="updateUserById" parameterType="com.example.showselfdemo.dao.User">
+        update show_user set username=#{username},name=#{name},email=#{email},sex=#{sex},phone=#{phone},grade=#{grade} where id=#{id}
+    </update>
+
 </mapper>

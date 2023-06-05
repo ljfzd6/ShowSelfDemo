@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @Builder
 public class R {
-    HttpStatus code;
+    Integer code;
     String msg;
     Object Data;
 }

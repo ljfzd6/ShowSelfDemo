@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface UserMapper {
     List<User> selectAll();
-    User selectUserByUsername(String username);
+    User selectUserByEmail(String email);
+    Integer insertUser(User user);
+    Integer updateUserById(User user);
 }
