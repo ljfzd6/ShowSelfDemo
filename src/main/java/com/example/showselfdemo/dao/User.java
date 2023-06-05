@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 public class User {
     String id,username,password,name,email,phone;
-    Integer sex,role;
+    Integer sex,grade;
     Date createtime;
 
     @Override
@@ -26,7 +26,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", sex=" + sex +
-                ", role=" + role +
+                ", grade=" + grade +
                 ", createtime=" + createtime +
                 '}';
     }
