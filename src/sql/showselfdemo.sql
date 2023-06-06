@@ -11,7 +11,7 @@
  Target Server Version : 50734
  File Encoding         : 65001
 
- Date: 05/06/2023 17:11:15
+ Date: 06/06/2023 17:10:38
 */
 
 SET NAMES utf8mb4;
@@ -27,13 +27,12 @@ CREATE TABLE `show_log`  (
   `logcontext` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '日志内容',
   `loguser` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '日志对象',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 125 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of show_log
 -- ----------------------------
 INSERT INTO `show_log` VALUES (1, '2023-06-05 16:44:55', 'test333查询了test333的个人信息', 'test333');
-INSERT INTO `show_log` VALUES (2, '2023-06-05 16:49:27', 'test333查询了test333的个人信息', 'test333');
 
 -- ----------------------------
 -- Table structure for show_project
@@ -84,7 +83,7 @@ CREATE TABLE `show_user`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '密码',
   `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '用户姓名',
   `email` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱',
-  `sex` int(5) NULL DEFAULT NULL COMMENT '性别',
+  `sex` int(5) NULL DEFAULT NULL COMMENT '性别(男1女0)',
   `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '电话',
   `grade` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '等级',
   `createtime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -94,8 +93,9 @@ CREATE TABLE `show_user`  (
 -- ----------------------------
 -- Records of show_user
 -- ----------------------------
-INSERT INTO `show_user` VALUES ('44a601f945cf3d129b18', 'test333', 'test333', '王五', '1650548543@qq.com', 1, '18806100277', '1', '2023-06-05 14:48:32');
-INSERT INTO `show_user` VALUES ('test1', 'test123', 'test123', '张三', '1650547543@qq.com', 1, '18806100277', '1', '2023-06-05 10:18:51');
+INSERT INTO `show_user` VALUES ('44a601f945cf3d129b18', 'testman', 'test333', '刘强东', '1650111143@qq.com', 1, '18806100277', '1', '2023-06-05 14:48:32');
+INSERT INTO `show_user` VALUES ('484656e0502334fd96b5', 'admin', 'admin', '管理员', '1650548543@qq.com', 1, '18806100277', '5', '2023-06-06 13:38:07');
+INSERT INTO `show_user` VALUES ('test1', 'test123', 'test123', '张三', '1651117543@qq.com', 1, '18806100277', '1', '2023-06-05 10:18:51');
 INSERT INTO `show_user` VALUES ('test2', 'test222', 'test222', '李四', '1650546543@qq.com', 1, '18806100277', '1', '2023-06-05 10:18:51');
 
 -- ----------------------------
