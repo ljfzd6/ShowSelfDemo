@@ -5,6 +5,8 @@ import com.example.showselfdemo.dao.R;
 import com.example.showselfdemo.dao.User;
 import com.example.showselfdemo.service.LogService;
 import com.example.showselfdemo.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
@@ -15,7 +17,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
+    private static  final Logger logger=LoggerFactory.getLogger(UserController.class);
     @Autowired
     UserService userService;
     @Autowired
@@ -26,8 +28,8 @@ public class UserController {
         User userByUsername = userService.getUserByEmail(email);
         if (userByUsername!=null&& !StringUtils.isEmpty(userByUsername)){
             Integer integer = logService.addLog(Log.builder().logtime(new Date()).logcontext(loguser + "查询了" + userByUsername.getUsername() + "的个人信息").loguser(loguser).build());
-            if (integer==0){
-
+            if (integer!=0){
+                logger.error(loguser + "查询了" + userByUsername.getUsername() + "的个人信息，日志上传失败");
             }
             return R.builder().code(HttpStatus.OK.value()).msg("请求成功").Data(userByUsername).build();
         }else

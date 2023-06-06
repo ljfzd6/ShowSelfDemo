@@ -15,3 +15,4 @@ mybatis:
   configuration:
     # 就是这行代码让mybatis可以输出sql语句
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

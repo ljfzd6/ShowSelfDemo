@@ -6,6 +6,8 @@ import com.example.showselfdemo.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LogServiceImpl implements LogService {
     @Autowired
@@ -13,5 +15,10 @@ public class LogServiceImpl implements LogService {
     @Override
     public Integer addLog(Log log) {
         return logMapper.insertLog(log);
+    }
+
+    @Override
+    public List<Log> getallLog() {
+        return logMapper.selectAllLog();
     }
 }
