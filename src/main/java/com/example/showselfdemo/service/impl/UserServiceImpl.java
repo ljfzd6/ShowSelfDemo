@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByID(String id) {
+        return userMapper.selectUserByID(id);
+    }
+
+    @Override
     public Integer addUser(User user) {
         Date date = new Date();
         user.setCreatetime(date);

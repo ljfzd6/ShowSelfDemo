@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserService {
     List<User> getAllUser();
     User getUserByEmail(String email);
+    User getUserByID(String Id);
     Integer addUser(User user);
     Integer updateUser(User user);
 }

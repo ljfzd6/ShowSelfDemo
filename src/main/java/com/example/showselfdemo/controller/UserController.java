@@ -22,14 +22,47 @@ public class UserController {
     UserService userService;
     @Autowired
     LogService logService;
+    //注册
+    @GetMapping("/login")
+    public R login(@RequestParam("email") String email,
+                   @RequestParam("password") String password){
+        R admin = getUserByEmail(email, "admin");
+        User data = (User) admin.getData();
+        if (!StringUtils.isEmpty(data)&&data!=null){
+            if (data.getPassword().equals(password)){
+                Integer integer = logService.addLog(Log.builder().logtime(new Date()).logcontext(data.getUsername() + "登录了").loguser(data.getUsername()).build());
+                if (integer.equals(0)){
+                    logger.error(data.getUsername()+ "登录了，日志写入失败");
+                }
+                return R.builder().code(HttpStatus.OK.value()).msg("登录成功").Data(data).build();
+            }else{
+                return R.builder().code(HttpStatus.FAILED_DEPENDENCY.value()).msg("密码错误").build();
+            }
+        }
+        else
+        {return R.builder().code(HttpStatus.FAILED_DEPENDENCY.value()).msg("查无此人").build();}
+    }
+    //通过id查询用户信息
+    @GetMapping("/getuserbyid")
+    public R getUserByID(String id,String operator) {
+        User userById = userService.getUserByID(id);
+        if (userById!=null&& !StringUtils.isEmpty(userById)){
+            Integer integer = logService.addLog(Log.builder().logtime(new Date()).logcontext(operator + "查询了" + userById.getUsername() + "的个人信息").loguser(operator).build());
+            if (integer.equals(0)){
+                logger.error(operator + "查询了" + userById.getUsername() + "的个人信息，日志写入失败");
+            }
+            return R.builder().code(HttpStatus.OK.value()).msg("请求成功").Data(userById).build();
+        }else
+        {return R.builder().code(HttpStatus.NOT_FOUND.value()).msg("数据库无该用户").build();}
+    }
     //通过邮箱查询用户信息
-    @GetMapping("/getuserbyusername")
-    public R getUserByUsername(String email,String loguser) {
+    @GetMapping("/getuserbyemail")
+    public R getUserByEmail(String email,String operator) {
         User userByUsername = userService.getUserByEmail(email);
         if (userByUsername!=null&& !StringUtils.isEmpty(userByUsername)){
-            Integer integer = logService.addLog(Log.builder().logtime(new Date()).logcontext(loguser + "查询了" + userByUsername.getUsername() + "的个人信息").loguser(loguser).build());
-            if (integer!=0){
-                logger.error(loguser + "查询了" + userByUsername.getUsername() + "的个人信息，日志上传失败");
+            Integer integer = logService.addLog(Log.builder().logtime(new Date()).logcontext(operator + "查询了" + userByUsername.getUsername() + "的个人信息").loguser(operator).build());
+            if (integer.equals(0)){
+                logger.error(operator + "查询了" + userByUsername.getUsername() + "的个人信息，日志写入失败");
             }
             return R.builder().code(HttpStatus.OK.value()).msg("请求成功").Data(userByUsername).build();
         }else
@@ -37,9 +70,14 @@ public class UserController {
     }
     //添加用户
     @PostMapping("/adduser")
-    public R addUser(@RequestBody User user){
-        Integer integer = userService.addUser(user);
-        if (integer.equals(1)){
+    public R addUser(@RequestBody User user,
+                     String operator){
+        Integer addUser = userService.addUser(user);
+        if (addUser.equals(1)){
+            Integer integer = logService.addLog(Log.builder().loguser(operator).logcontext("添加了用户" + user.toString()).logtime(new Date()).build());
+            if (integer.equals(0)){
+                logger.error(operator+"添加了用户"+user.toString()+"日志写入失败");
+            }
             return R.builder().code(HttpStatus.OK.value()).msg("添加成功").build();
         }else
         {
@@ -48,11 +86,16 @@ public class UserController {
     }
     //根据Id更改用户信息
     @PutMapping("/updateuser")
-    public R updateUser(@RequestBody User user)
+    public R updateUser(@RequestBody User user,
+                        String operator)
     {
-        Integer integer = userService.updateUser(user);
-        if (integer.equals(1)){
-            return R.builder().code(HttpStatus.OK.value()).msg("添加成功").build();
+        Integer updateUser = userService.updateUser(user);
+        if (updateUser.equals(1)){
+            Integer integer = logService.addLog(Log.builder().loguser(operator).logtime(new Date()).logcontext("修改了" + user + "的数据").build());
+            if (integer.equals(0)) {
+                logger.error(operator+"更改了用户"+user.toString()+"日志写入失败");
+            }
+            return R.builder().code(HttpStatus.OK.value()).msg("修改成功").build();
         }else {
             return R.builder().code(HttpStatus.EXPECTATION_FAILED.value()).msg("添加失败").build();
         }
