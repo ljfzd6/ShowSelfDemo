@@ -88,7 +88,7 @@ public class UserController {
         if (addUser.equals(1)){
             Integer integer = logService.addLog(Log.builder().loguser(operator).logcontext("添加了用户" + user.toString()).logtime(new Date()).build());
             if (integer.equals(0)){
-                logger.error(operator+"添加了用户"+user.toString()+"日志写入失败");
+                logger.error(operator+"添加了用户"+user+"日志写入失败");
             }
             return R.builder().code(HttpStatus.OK.value()).msg("添加成功").build();
         }else
@@ -123,4 +123,13 @@ public class UserController {
         String verifyCode = captcha.getCode();
         request.getSession().setAttribute("verifyCode",verifyCode);
     }
+    //注册功能
+    @PostMapping("/register")
+    public R register(@RequestBody User user)
+    {
+        user.setGrade(1);
+        R admin = addUser(user, "admin");
+        return admin;
+    }
+
 }
