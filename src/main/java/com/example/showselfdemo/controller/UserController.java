@@ -1,5 +1,7 @@
 package com.example.showselfdemo.controller;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.ShearCaptcha;
 import com.example.showselfdemo.dao.Log;
 import com.example.showselfdemo.dao.R;
 import com.example.showselfdemo.dao.User;
@@ -12,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.Date;
 
 @RestController
@@ -25,7 +31,13 @@ public class UserController {
     //注册
     @GetMapping("/login")
     public R login(@RequestParam("email") String email,
-                   @RequestParam("password") String password){
+                   @RequestParam("password") String password,
+                   @RequestParam("verifyCode") String verifyCode,
+                   HttpSession session){
+        String captchaCode = (String) session.getAttribute("verifyCode");
+        if (captchaCode.isEmpty()||!captchaCode.equals(verifyCode)){
+            return R.builder().code(HttpStatus.FAILED_DEPENDENCY.value()).msg("验证码输入错误").build();
+        }
         R admin = getUserByEmail(email, "admin");
         User data = (User) admin.getData();
         if (!StringUtils.isEmpty(data)&&data!=null){
@@ -100,5 +112,15 @@ public class UserController {
             return R.builder().code(HttpStatus.EXPECTATION_FAILED.value()).msg("添加失败").build();
         }
     }
-
+    @GetMapping("/verifycode")
+    public void Verify(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("进来了");
+        //定义图形验证码的长、宽、验证码字符数、干扰线宽度
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(150, 40, 5, 4);
+        //图形验证码写出，可以写出到文件，也可以写出到流
+        captcha.write(response.getOutputStream());
+        //获取验证码中的文字内容
+        String verifyCode = captcha.getCode();
+        request.getSession().setAttribute("verifyCode",verifyCode);
+    }
 }
