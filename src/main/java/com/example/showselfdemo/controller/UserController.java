@@ -28,7 +28,7 @@ public class UserController {
     UserService userService;
     @Autowired
     LogService logService;
-    //注册
+    //登录
     @GetMapping("/login")
     public R login(@RequestParam("email") String email,
                    @RequestParam("password") String password,
@@ -123,11 +123,12 @@ public class UserController {
         String verifyCode = captcha.getCode();
         request.getSession().setAttribute("verifyCode",verifyCode);
     }
-    //注册功能
+    //注册
     @PostMapping("/register")
     public R register(@RequestBody User user)
     {
         user.setGrade(1);
+        user.setSex(1);
         R admin = addUser(user, "admin");
         return admin;
     }

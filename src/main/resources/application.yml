@@ -1,4 +1,18 @@
 spring:
+  redis:
+    host: 127.0.0.1
+    port: 6380
+    password: root
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 1650548543@qq.com
+    password: sgenjtyqkvohdfdf
+    properties:
+      mail.smtp.ssl.enable: true
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: ture
+      mail.smtp.starttls.required: true
   application:
     name: showselfdemo
   datasource:
@@ -15,4 +29,3 @@ mybatis:
   configuration:
     # 就是这行代码让mybatis可以输出sql语句
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
