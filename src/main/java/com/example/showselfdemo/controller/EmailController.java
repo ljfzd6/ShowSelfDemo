@@ -32,6 +32,8 @@ public class EmailController {
             ValueOperations valueOperations = redisTemplate.opsForValue();
             //向redis中写入验证码，五分钟内有效
             valueOperations.set(id,emailContent.getCode(), 5, TimeUnit.MINUTES);
+            String s = (String) valueOperations.get(id);
+            System.out.println("id"+id+"value"+s);
             service.sendMail(email,"欢迎注册流星个人博客",emailContent.getContentA());
         } catch (MessagingException e) {
             e.printStackTrace();

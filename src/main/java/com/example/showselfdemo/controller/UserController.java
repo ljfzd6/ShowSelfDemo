@@ -5,11 +5,15 @@ import cn.hutool.captcha.ShearCaptcha;
 import com.example.showselfdemo.dao.Log;
 import com.example.showselfdemo.dao.R;
 import com.example.showselfdemo.dao.User;
+import com.example.showselfdemo.dao.request.AddUser;
+import com.example.showselfdemo.dao.request.Register;
 import com.example.showselfdemo.service.LogService;
 import com.example.showselfdemo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +29,11 @@ import java.util.Date;
 public class UserController {
     private static  final Logger logger=LoggerFactory.getLogger(UserController.class);
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    LogService logService;
+    private LogService logService;
+    @Autowired
+    private RedisTemplate redisTemplate;
     //登录
     @GetMapping("/login")
     public R login(@RequestParam("email") String email,
@@ -81,14 +87,14 @@ public class UserController {
         {return R.builder().code(HttpStatus.NOT_FOUND.value()).msg("数据库无该用户").build();}
     }
     //添加用户
-    @PostMapping("/adduser")
-    public R addUser(@RequestBody User user,
-                     String operator){
-        Integer addUser = userService.addUser(user);
+    @GetMapping("/adduser")
+    public R addUser(@RequestBody AddUser user){
+        System.out.println(user);
+        Integer addUser = userService.addUser(user.getUser());
         if (addUser.equals(1)){
-            Integer integer = logService.addLog(Log.builder().loguser(operator).logcontext("添加了用户" + user.toString()).logtime(new Date()).build());
+            Integer integer = logService.addLog(Log.builder().loguser(user.getOperator()).logcontext("添加了用户" + user.toString()).logtime(new Date()).build());
             if (integer.equals(0)){
-                logger.error(operator+"添加了用户"+user+"日志写入失败");
+                logger.error(user.getOperator()+"添加了用户"+user+"日志写入失败");
             }
             return R.builder().code(HttpStatus.OK.value()).msg("添加成功").build();
         }else
@@ -114,7 +120,6 @@ public class UserController {
     }
     @GetMapping("/verifycode")
     public void Verify(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("进来了");
         //定义图形验证码的长、宽、验证码字符数、干扰线宽度
         ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(150, 40, 5, 4);
         //图形验证码写出，可以写出到文件，也可以写出到流
@@ -125,12 +130,17 @@ public class UserController {
     }
     //注册
     @PostMapping("/register")
-    public R register(@RequestBody User user)
-    {
-        user.setGrade(1);
-        user.setSex(1);
-        R admin = addUser(user, "admin");
-        return admin;
-    }
+    public  R register(@RequestBody Register register) {
+        User user1 = register.getUser();
+        user1.setGrade(1);
+        user1.setSex(1);
+        String s = (String) redisTemplate.opsForValue().get(register.getUsercode());
+        if (!s.isEmpty()&&s.equals(register.getCode())){
+            R admin = addUser(AddUser.builder().user(user1).operator("admin").build());
+            return admin;
+        }else{
+            return R.builder().code(HttpStatus.NOT_FOUND.value()).msg("验证码有误").build();
+        }
 
+    }
 }
