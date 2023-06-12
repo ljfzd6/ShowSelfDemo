@@ -42,4 +42,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateUserById(user);
     }
 
+    @Override
+    public Integer updatePassword(User user) {
+        return userMapper.updatePasswordById(user);
+    }
+
 }

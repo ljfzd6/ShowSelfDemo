@@ -23,5 +23,8 @@
     <update id="updateUserById" parameterType="com.example.showselfdemo.dao.User">
         update show_user set username=#{username},name=#{name},email=#{email},sex=#{sex},phone=#{phone} where id=#{id}
     </update>
+    <update id="updatePasswordById" parameterType="com.example.showselfdemo.dao.User">
+        update show_user set password=#{password} where id=#{id}
+    </update>
 
 </mapper>

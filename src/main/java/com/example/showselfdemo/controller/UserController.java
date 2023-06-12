@@ -7,6 +7,7 @@ import com.example.showselfdemo.dao.R;
 import com.example.showselfdemo.dao.User;
 import com.example.showselfdemo.dao.request.AddUser;
 import com.example.showselfdemo.dao.request.Register;
+import com.example.showselfdemo.dao.request.UpdateUser;
 import com.example.showselfdemo.service.LogService;
 import com.example.showselfdemo.service.UserService;
 import org.slf4j.Logger;
@@ -86,6 +87,7 @@ public class UserController {
         }else
         {return R.builder().code(HttpStatus.NOT_FOUND.value()).msg("数据库无该用户").build();}
     }
+
     //添加用户
     @GetMapping("/adduser")
     public R addUser(@RequestBody AddUser user){
@@ -104,18 +106,32 @@ public class UserController {
     }
     //根据Id更改用户信息
     @PutMapping("/updateuser")
-    public R updateUser(@RequestBody User user,
-                        String operator)
+    public R updateUser(@RequestBody UpdateUser user)
     {
-        Integer updateUser = userService.updateUser(user);
+        Integer updateUser = userService.updateUser(user.getUser());
         if (updateUser.equals(1)){
-            Integer integer = logService.addLog(Log.builder().loguser(operator).logtime(new Date()).logcontext("修改了" + user + "的数据").build());
+            Integer integer = logService.addLog(Log.builder().loguser(user.getOperator()).logtime(new Date()).logcontext("修改了" + user + "的数据").build());
             if (integer.equals(0)) {
-                logger.error(operator+"更改了用户"+user.toString()+"日志写入失败");
+                logger.error(user.getOperator()+"更改了用户"+user.toString()+"日志写入失败");
             }
             return R.builder().code(HttpStatus.OK.value()).msg("修改成功").build();
         }else {
             return R.builder().code(HttpStatus.EXPECTATION_FAILED.value()).msg("添加失败").build();
+        }
+    }
+    //根据Id更改密码
+    @PutMapping("/updatepassword")
+    public R updatePassword(@RequestBody UpdateUser user)
+    {
+        Integer updatePassword  = userService.updatePassword(user.getUser());
+        if (updatePassword==1){
+            Integer integer = logService.addLog(Log.builder().loguser(user.getOperator()).logtime(new Date()).logcontext("修改了" + user + "的密码").build());
+            if (integer.equals(0)) {
+                logger.error(user.getOperator()+"更改了用户"+user.toString()+"日志写入失败");
+            }
+            return R.builder().code(HttpStatus.OK.value()).msg("修改成功").build();
+        }else {
+            return R.builder().code(HttpStatus.EXPECTATION_FAILED.value()).msg("修改失败，请等待管理员解决").build();
         }
     }
     @GetMapping("/verifycode")
@@ -143,4 +159,18 @@ public class UserController {
         }
 
     }
+//    //忘记密码
+//    @GetMapping("/forgetpassword")
+//    public R forgetpassword(String email){
+//        R admin = getUserByEmail(email, "admin");
+//        User data = (User) admin.getData();
+//        if (!StringUtils.isEmpty(data))
+//        {
+//            return admin;
+//        }
+//        else {
+//            return R.builder().code(HttpStatus.NOT_FOUND.value()).msg("邮箱输入错误，请查证").build();
+//        }
+//
+//    }
 }

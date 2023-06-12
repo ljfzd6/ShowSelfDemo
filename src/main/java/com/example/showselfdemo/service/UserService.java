@@ -12,4 +12,5 @@ public interface UserService {
     User getUserByID(String Id);
     Integer addUser(User user);
     Integer updateUser(User user);
+    Integer updatePassword(User user);
 }

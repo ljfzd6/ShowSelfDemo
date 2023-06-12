@@ -10,4 +10,5 @@ public interface UserMapper {
     User selectUserByID(String id);
     Integer insertUser(User user);
     Integer updateUserById(User user);
+    Integer updatePasswordById(User user);
 }
